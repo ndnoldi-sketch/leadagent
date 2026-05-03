@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (accessToken) {
     try {
       const adsRes = await fetch(
-        "https://googleads.googleapis.com/v19/customers:listAccessibleCustomers",
+        "https://googleads.googleapis.com/v23/customers:listAccessibleCustomers",
         {
           method: "GET",
           headers: {
