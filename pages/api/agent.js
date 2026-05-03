@@ -3,28 +3,40 @@ export default async function handler(req, res) {
 
   const { message, accessToken } = req.body
 
-  let adsDebug = ""
+  let adsContext = ""
 
   if (accessToken) {
     try {
       const adsRes = await fetch(
-        "https://googleads.googleapis.com/v23/customers:listAccessibleCustomers",
+        "https://googleads.googleapis.com/v23/customers/2741577595/googleAds:search",
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
             "developer-token": process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
-          }
+            "login-customer-id": "5163947991",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            query: `SELECT campaign.id, campaign.name, campaign.status, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM campaign WHERE segments.date DURING LAST_30_DAYS ORDER BY metrics.cost_micros DESC LIMIT 10`
+          })
         }
       )
-      const text = await adsRes.text()
-      adsDebug = text.substring(0, 500)
+      const adsData = await adsRes.json()
+      if (adsData.results && adsData.results.length > 0) {
+        adsContext = "Datos reales de Google Ads (últimos 30 días):\n" + adsData.results.map(r => {
+          const cost = (r.metrics?.costMicros || 0) / 1000000
+          return `- ${r.campaign.name}: estado=${r.campaign.status}, impresiones=${r.metrics?.impressions || 0}, clicks=${r.metrics?.clicks || 0}, coste=€${cost.toFixed(2)}, conversiones=${r.metrics?.conversions || 0}`
+        }).join("\n")
+      } else {
+        adsContext = "Respuesta de Google Ads: " + JSON.stringify(adsData).substring(0, 300)
+      }
     } catch (e) {
-      adsDebug = "Error: " + e.message
+      adsContext = "Error: " + e.message
     }
-  } else {
-    adsDebug = "Sin token de acceso"
   }
 
-  res.status(200).json({ reply: "DEBUG: " + adsDebug })
-}
+  const systemPrompt = `Eres un agente experto en Google Ads especializado en conseguir leads.
+Tu objetivo es ayudar a crear, optimizar y gestionar campañas para maximizar leads al menor coste posible.
+Cuando el usuario pida crear o modificar campañas, explica exactamente qué harías y pide confirmación.
+Responde siempre en español, de forma clara
