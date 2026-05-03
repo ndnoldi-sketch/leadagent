@@ -14,6 +14,7 @@ export default async function handler(req, res) {
           headers: {
             "Authorization": `Bearer ${accessToken}`,
             "developer-token": process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
+            "login-customer-id": "5163947991",
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
@@ -21,8 +22,8 @@ export default async function handler(req, res) {
           })
         }
       )
-      const adsData = await adsRes.json()
-      adsDebug = JSON.stringify(adsData)
+      const text = await adsRes.text()
+      adsDebug = text.substring(0, 500)
     } catch (e) {
       adsDebug = "Error: " + e.message
     }
