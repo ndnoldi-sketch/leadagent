@@ -64,7 +64,7 @@ export default function Dashboard() {
       </div>
 
       <div style={{ maxWidth: 720, margin: "40px auto", padding: "0 20px" }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Agente IA</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Agente IA v2</h1>
         <p style={{ fontSize: 13, color: "#888", marginBottom: 24 }}>Habla con tu agente para gestionar campanas de Google Ads</p>
 
         <div style={{
