@@ -8,18 +8,13 @@ export default async function handler(req, res) {
   if (accessToken) {
     try {
       const adsRes = await fetch(
-        "https://googleads.googleapis.com/v19/customers/2741577595/googleAds:search",
+        "https://googleads.googleapis.com/v19/customers:listAccessibleCustomers",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
             "developer-token": process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
-            "login-customer-id": "5163947991",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            query: `SELECT campaign.id, campaign.name, campaign.status FROM campaign LIMIT 5`
-          })
+          }
         }
       )
       const text = await adsRes.text()
