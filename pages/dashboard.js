@@ -6,7 +6,7 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [messages, setMessages] = useState([
-    { role: "agent", text: "Hola. Estoy conectado a tu cuenta de Google Ads. ¿Qué quieres hacer hoy?" }
+    { role: "agent", text: "Hola. Estoy conectado a tu cuenta de Google Ads. Que quieres hacer hoy?" }
   ])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
@@ -65,7 +65,7 @@ export default function Dashboard() {
 
       <div style={{ maxWidth: 720, margin: "40px auto", padding: "0 20px" }}>
         <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Agente IA</h1>
-        <p style={{ fontSize: 13, color: "#888", marginBottom: 24 }}>Habla con tu agente para gestionar campañas de Google Ads</p>
+        <p style={{ fontSize: 13, color: "#888", marginBottom: 24 }}>Habla con tu agente para gestionar campanas de Google Ads</p>
 
         <div style={{
           background: "white",
@@ -74,4 +74,68 @@ export default function Dashboard() {
           overflow: "hidden"
         }}>
           <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12, minHeight: 320, maxHeight: 400, overflowY: "auto" }}>
-            {messages.map((msg, i) =
+            {messages.map(function(msg, i) {
+              return (
+                <div key={i} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}>
+                  <div style={{
+                    maxWidth: "80%",
+                    padding: "10px 14px",
+                    borderRadius: 12,
+                    fontSize: 13,
+                    lineHeight: 1.5,
+                    background: msg.role === "user" ? "#1D9E75" : "#f4f4f2",
+                    color: msg.role === "user" ? "white" : "#1a1a1a",
+                    borderBottomRightRadius: msg.role === "user" ? 3 : 12,
+                    borderBottomLeftRadius: msg.role === "agent" ? 3 : 12,
+                  }}>
+                    {msg.text}
+                  </div>
+                </div>
+              )
+            })}
+            {loading && (
+              <div style={{ display: "flex" }}>
+                <div style={{ background: "#f4f4f2", padding: "10px 14px", borderRadius: 12, borderBottomLeftRadius: 3, fontSize: 13, color: "#888" }}>
+                  Pensando...
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ borderTop: "0.5px solid #e0e0e0", padding: 12, display: "flex", gap: 8 }}>
+            <input
+              value={input}
+              onChange={function(e) { setInput(e.target.value) }}
+              onKeyDown={function(e) { if (e.key === "Enter") sendMessage() }}
+              placeholder="Escribe algo al agente..."
+              style={{
+                flex: 1,
+                padding: "9px 14px",
+                border: "0.5px solid #e0e0e0",
+                borderRadius: 10,
+                fontSize: 13,
+                outline: "none",
+                fontFamily: "sans-serif"
+              }}
+            />
+            <button
+              onClick={sendMessage}
+              style={{
+                background: "#1D9E75",
+                color: "white",
+                border: "none",
+                borderRadius: 10,
+                padding: "9px 18px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer"
+              }}
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
