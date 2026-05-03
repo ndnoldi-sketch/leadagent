@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (accessToken) {
     try {
       const adsRes = await fetch(
-        "https://googleads.googleapis.com/v17/customers/2741577595/googleAds:search",
+        "https://googleads.googleapis.com/v19/customers/2741577595/googleAds:search",
         {
           method: "POST",
           headers: {
